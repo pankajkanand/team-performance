@@ -65,11 +65,11 @@ const Dashboard = ({ teamMembers, feedbacks, userRole, userData }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-2 sm:gap-0">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center sm:text-left w-full sm:w-auto">
           {userRole === 'team_member' ? 'My Performance Dashboard' : 'Performance Dashboard'}
         </h2>
-        <div className="text-right">
+        <div className="text-center sm:text-right w-full sm:w-auto mt-2 sm:mt-0">
           <div className="text-sm text-gray-500">Welcome back,</div>
           <div className="font-semibold text-gray-700">{userData?.name}</div>
           <div className="text-sm text-indigo-600 capitalize">

@@ -26,33 +26,31 @@ const Header = ({ companyName }) => {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 mb-8 shadow-2xl">
-      <div className="flex justify-between items-center">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-3">
+    <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-4 sm:p-8 mb-8 shadow-2xl">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
+        <div className="flex-1 w-full">
+          <div className="flex flex-col sm:flex-row items-center gap-3 mb-3">
             <Building className="text-indigo-600" size={32} />
-            <div>
-              <h1 className="text-4xl font-bold text-gray-700">Team Performance Review</h1>
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl sm:text-4xl font-bold text-gray-700">Team Performance Review</h1>
               {companyName && (
-                <p className="text-lg text-indigo-600 font-semibold">{companyName}</p>
+                <p className="text-base sm:text-lg text-indigo-600 font-semibold">{companyName}</p>
               )}
             </div>
           </div>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-base sm:text-lg text-center sm:text-left">
             Manage team members and track their performance with actionable feedback
           </p>
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <div className="flex items-center gap-2 mb-1">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto mt-4 sm:mt-0">
+          <div className="text-center sm:text-right w-full sm:w-auto">
+            <div className="flex items-center gap-2 mb-1 justify-center sm:justify-end">
               <User size={16} className="text-gray-500" />
               <span className="font-semibold text-gray-700">{userData?.name}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-sm font-semibold capitalize ${getRoleColor(userData?.role)}`}>
-                {userData?.role?.replace('_', ' ')}
-              </span>
+            <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
+              <span className={`text-sm font-semibold capitalize ${getRoleColor(userData?.role)}`}>{userData?.role?.replace('_', ' ')}</span>
               <span className="text-sm text-gray-500">•</span>
               <span className="text-sm text-gray-500">{userData?.email}</span>
             </div>
@@ -60,7 +58,7 @@ const Header = ({ companyName }) => {
           
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+            className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto justify-center"
             title="Logout"
           >
             <LogOut size={18} />

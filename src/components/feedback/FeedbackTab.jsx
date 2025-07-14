@@ -75,7 +75,7 @@ const FeedbackTab = ({ teamMembers, feedbacks, onSubmitFeedback, onToggleStatus,
           ) : (
             <div className="space-y-4">
               {feedbacks.map(feedback => {
-                const member = teamMembers.find(m => m.id === feedback.memberId);
+                const member = teamMembers.find(m => m.uid === feedback.memberUid);
                 return (
                   <FeedbackItem
                     key={feedback.id}

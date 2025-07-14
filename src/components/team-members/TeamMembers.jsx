@@ -44,17 +44,17 @@ const TeamMembers = ({ teamMembers, feedbacks, onSaveMember, onDeleteMember, use
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-800">Team Members</h2>
-          <p className="text-gray-600 mt-2">Manage your team members and their access</p>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 sm:gap-0">
+        <div className="w-full sm:w-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Team Members</h2>
+          <p className="text-gray-600 mt-2 text-base sm:text-lg">Manage your team members and their access</p>
         </div>
         {canManageMembers && (
           <button
             onClick={() => setShowAddMember(true)}
-            className="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3 sm:px-6 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-base sm:text-lg"
           >
-            <Plus size={18} />
+            <Plus size={20} />
             Add Team Member
           </button>
         )}
@@ -160,7 +160,7 @@ const TeamMembers = ({ teamMembers, feedbacks, onSaveMember, onDeleteMember, use
 
       {/* Team Members Grid */}
       {filteredMembers.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredMembers.map(member => (
             <TeamMemberCard
               key={member.id}

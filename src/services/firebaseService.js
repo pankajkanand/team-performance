@@ -17,10 +17,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  getAuth
 } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
 import { db, auth } from '../firebase/config';
 
 class FirebaseService {
@@ -33,14 +33,19 @@ class FirebaseService {
   // Initialize secondary Firebase app for user creation
   initSecondaryApp() {
     if (!this.secondaryApp) {
-      // Use the same config as your main app
+      // Use the same config as your main Firebase setup
       const firebaseConfig = {
-        // You'll need to add your Firebase config here
-        // This should be the same config used in your main Firebase setup
-        // For now, we'll use a different approach that doesn't require secondary app
+        apiKey: "AIzaSyAwOIqZDcxFzzWDxBA1q9CDiGZF29X892Q",
+        authDomain: "bosc-scorewatch.firebaseapp.com",
+        projectId: "bosc-scorewatch",
+        storageBucket: "bosc-scorewatch.appspot.com",
+        messagingSenderId: "167913320690",
+        appId: "1:167913320690:web:5465ce53425e2c77f5a06b",
+        measurementId: "G-J4WZL1L4SC"
       };
       
-      // Alternative approach: We'll create the user and immediately sign back in as admin
+      this.secondaryApp = initializeApp(firebaseConfig, 'secondary');
+      this.secondaryAuth = getAuth(this.secondaryApp);
     }
   }
 
@@ -133,20 +138,17 @@ class FirebaseService {
     return password;
   }
 
-  // Create team member with Firebase Auth account - FIXED VERSION
-  async createTeamMember(memberData, currentUserCompanyId, currentUserCredentials) {
+  // Create team member with Firebase Auth account - BULLETPROOF VERSION
+  async createTeamMember(memberData, currentUserCompanyId) {
     try {
       console.log('Creating team member with auth account:', memberData);
-      
-      // // Store current user info to sign back in later
-      // const currentUserEmail = currentUserCredentials.email;
-      // const currentUserPassword = currentUserCredentials.password;
       
       // Use provided password or generate one
       const password = memberData.password || this.generatePassword();
       
-      // Create Firebase Auth user (this will sign out current user)
-      const userCredential = await createUserWithEmailAndPassword(auth, memberData.email, password);
+      // Create Firebase Auth user using secondary app (doesn't affect main auth)
+      this.initSecondaryApp();
+      const userCredential = await createUserWithEmailAndPassword(this.secondaryAuth, memberData.email, password);
       const newUser = userCredential.user;
       
       // Create user document in Firestore
@@ -164,13 +166,10 @@ class FirebaseService {
         updatedAt: serverTimestamp()
       });
       
-      // // Sign out the newly created user and sign back in as the admin/reviewer
-      // await signOut(auth);
+      // Sign out from secondary app (doesn't affect main auth)
+      await signOut(this.secondaryAuth);
       
-      // // Sign back in as the original user
-      // await signInWithEmailAndPassword(auth, currentUserEmail, currentUserPassword);
-      
-      console.log('Team member created successfully and original user restored');
+      console.log('Team member created successfully without affecting admin session');
       return { 
         id: userRef.id, 
         uid: newUser.uid,
@@ -182,13 +181,13 @@ class FirebaseService {
     } catch (error) {
       console.error('Error creating team member:', error);
       
-      // If there's an error, try to sign back in as the original user
-      try {
-        if (currentUserCredentials && currentUserCredentials.email && currentUserCredentials.password) {
-          await signInWithEmailAndPassword(auth, currentUserCredentials.email, currentUserCredentials.password);
+      // Clean up secondary auth if there was an error
+      if (this.secondaryAuth) {
+        try {
+          await signOut(this.secondaryAuth);
+        } catch (signOutError) {
+          console.warn('Error signing out from secondary auth:', signOutError);
         }
-      } catch (signInError) {
-        console.error('Error restoring original user session:', signInError);
       }
       
       throw error;

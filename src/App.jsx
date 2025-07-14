@@ -212,6 +212,7 @@ const AppContent = () => {
             feedbacks={feedbacks}
             userRole={userData.role}
             userData={userData}
+            onToggleStatus={handleToggleStatus}
           />
         );
       

@@ -87,6 +87,19 @@ const FeedbackItem = ({ feedback, member, onToggleStatus, userRole }) => {
           <div className="text-orange-700 whitespace-pre-line text-sm leading-relaxed">
             {feedback.actionItems}
           </div>
+          
+          {/* Improvement Deadline */}
+          {feedback.improvementDeadline && (
+            <div className="mt-4 pt-4 border-t border-orange-300">
+              <div className="flex items-center gap-2 mb-1">
+                <Calendar className="text-orange-600" size={16} />
+                <strong className="text-orange-800">Target Completion Date:</strong>
+              </div>
+              <div className="text-orange-700 text-sm">
+                📅 <strong>{feedback.improvementDeadline}</strong>
+              </div>
+            </div>
+          )}
         </div>
       )}
       

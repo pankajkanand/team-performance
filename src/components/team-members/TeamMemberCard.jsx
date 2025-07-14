@@ -3,7 +3,7 @@ import React from 'react';
 import { Edit2, Trash2, User, Mail, Award, Clock, Shield } from 'lucide-react';
 
 const TeamMemberCard = ({ member, feedbacks, onEdit, onDelete, userRole }) => {
-  const memberFeedbacks = feedbacks.filter(f => f.memberId === member.id);
+  const memberFeedbacks = feedbacks.filter(f => f.memberUid === member.uid);
   const positiveFeedbacks = memberFeedbacks.filter(f => f.type === 'positive');
   const improvementFeedbacks = memberFeedbacks.filter(f => f.type === 'improvement');
   const openImprovements = improvementFeedbacks.filter(f => f.status === 'open');
@@ -50,45 +50,48 @@ const TeamMemberCard = ({ member, feedbacks, onEdit, onDelete, userRole }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
-      {/* Header with Avatar and Actions */}
-      <div className="flex justify-between items-start mb-6">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex items-center justify-center">
+    <div className="bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+      {/* Header with Avatar, Name, Email, and Actions */}
+      <div className="flex flex-col sm:flex-row justify-between items-start mb-6 gap-3 sm:gap-0">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full">
+          <div className="w-14 h-14 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
             <User className="text-indigo-600" size={28} />
           </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-800">{member.name}</h3>
-            <div className="flex items-center gap-2 text-gray-600 mt-1">
-              <Mail size={14} />
-              <span className="text-sm">{member.email}</span>
+          <div className="flex-1 min-w-0 w-full">
+            {/* Mobile: name, email, buttons stacked and centered; Desktop: name/buttons side-by-side, email below */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full">
+              <div className="flex flex-col items-center sm:items-start w-full">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 truncate max-w-full text-center sm:text-left">{member.name}</h3>
+                <div className="flex items-center gap-2 text-gray-600 mt-1 flex-wrap justify-center sm:justify-start">
+                  <Mail size={14} />
+                  <span className="text-sm break-all truncate max-w-[180px] sm:max-w-xs">{member.email}</span>
+                </div>
+              </div>
+              {(onEdit || onDelete) && (
+                <div className="flex gap-2 mt-2 sm:mt-0 w-full sm:w-auto justify-center sm:justify-end">
+                  {onEdit && (
+                    <button
+                      onClick={() => onEdit(member)}
+                      className="p-2 text-orange-600 hover:bg-orange-100 rounded-lg transition-all duration-200"
+                      title="Edit member"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                  )}
+                  {onDelete && (
+                    <button
+                      onClick={() => onDelete(member.id)}
+                      className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-all duration-200"
+                      title="Delete member"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
-        
-        {/* Action buttons - only show for admin/reviewer */}
-        {(onEdit || onDelete) && (
-          <div className="flex gap-2">
-            {onEdit && (
-              <button
-                onClick={() => onEdit(member)}
-                className="p-2 text-orange-600 hover:bg-orange-100 rounded-lg transition-all duration-200"
-                title="Edit member"
-              >
-                <Edit2 size={16} />
-              </button>
-            )}
-            {onDelete && (
-              <button
-                onClick={() => onDelete(member.id)}
-                className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-all duration-200"
-                title="Delete member"
-              >
-                <Trash2 size={16} />
-              </button>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Role and Position */}

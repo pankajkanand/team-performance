@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, Target, Users, User } from 'lucide-react';
+import { MessageSquare, Target, Users, User, Calendar } from 'lucide-react';
 
 const FeedbackForm = ({ teamMembers, onSubmit, currentUser }) => {
   const [formData, setFormData] = useState({
@@ -8,7 +8,8 @@ const FeedbackForm = ({ teamMembers, onSubmit, currentUser }) => {
     project: '',
     reviewer: currentUser?.name || '',
     description: '',
-    actionItems: ''
+    actionItems: '',
+    improvementDeadline: ''
   });
   const [showActionItems, setShowActionItems] = useState(false);
 
@@ -36,7 +37,8 @@ const FeedbackForm = ({ teamMembers, onSubmit, currentUser }) => {
       project: '',
       reviewer: currentUser?.name || '',
       description: '',
-      actionItems: ''
+      actionItems: '',
+      improvementDeadline: ''
     });
     setShowActionItems(false);
   };
@@ -48,6 +50,33 @@ const FeedbackForm = ({ teamMembers, onSubmit, currentUser }) => {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Function to format date to dd/mm/yyyy
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Function to convert dd/mm/yyyy to yyyy-mm-dd for input
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    const [day, month, year] = dateString.split('/');
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleDateChange = (e) => {
+    const inputDate = e.target.value; // This will be in yyyy-mm-dd format
+    if (inputDate) {
+      const formattedDate = formatDateForDisplay(inputDate);
+      handleChange('improvementDeadline', formattedDate);
+    } else {
+      handleChange('improvementDeadline', '');
+    }
   };
 
   if (availableMembers.length === 0) {
@@ -183,7 +212,33 @@ const FeedbackForm = ({ teamMembers, onSubmit, currentUser }) => {
               rows="5"
               className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition-all duration-200 resize-vertical bg-white"
             />
-            <p className="text-sm text-orange-700 mt-3">
+            
+            {/* Improvement Deadline */}
+            <div className="mt-6">
+              <div className="flex items-center gap-3 mb-3">
+                <Calendar className="text-orange-600" size={18} />
+                <label className="block text-orange-800 font-semibold">
+                  Improvement Deadline
+                </label>
+              </div>
+              <input
+                type="date"
+                value={formatDateForInput(formData.improvementDeadline)}
+                onChange={handleDateChange}
+                className="w-full sm:w-auto px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition-all duration-200 bg-white"
+                required
+              />
+              {formData.improvementDeadline && (
+                <p className="text-sm text-orange-700 mt-2">
+                  📅 Target improvement date: <strong>{formData.improvementDeadline}</strong>
+                </p>
+              )}
+              <p className="text-sm text-orange-600 mt-1">
+                Select the date by when this improvement should be completed
+              </p>
+            </div>
+            
+            <p className="text-sm text-orange-700 mt-4">
               💡 <strong>Tip:</strong> Be specific and actionable. Help them understand exactly what steps to take for improvement.
             </p>
           </div>
